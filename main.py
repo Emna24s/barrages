@@ -9,9 +9,21 @@ from pandasql import sqldf
 import duckdb
 import sys
 
+from starlette.middleware.cors import CORSMiddleware
 
 app = FastAPI()
 
+origins = [
+    "http://localhost:4200",
+]
+
+app.add_middleware(
+    CORSMiddleware,
+    allow_origins=origins,
+    allow_credentials=True,
+    allow_methods=["*"],
+    allow_headers=["*"],
+)
 
 @app.post("/test/{i}")
 def pairs(i:int):
@@ -68,7 +80,7 @@ def read_rootsql():
   #print(rec)
   setsjson = []
   con.register('test_df_view', df)
-  con.execute('SELECT Nom_Fr, max(stock) as stock FROM test_df_view group by Nom_Fr, stock  limit 10')
+  con.execute('SELECT Nom_Fr, max(stock) as stock FROM test_df_view group by Nom_Fr, stock  limit 20')
   rec = con.fetchall()
   new_rec = []
   
